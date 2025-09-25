@@ -1,0 +1,22 @@
+[
+  {
+    "ticket_id": 1,
+    "chat": "repay",
+    "user_id": 5431374795,
+    "user_name": "Никита",
+    "text": ";",
+    "file_id": null,
+    "status": "new",
+    "created_at": "2025-09-25T17:04:24.784497"
+  },
+  {
+    "ticket_id": 2,
+    "chat": "repay",
+    "user_id": 5431374795,
+    "user_name": "Никита",
+    "text": "а",
+    "file_id": null,
+    "status": "new",
+    "created_at": "2025-09-25T17:23:22.030520"
+  }
+]
