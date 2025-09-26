@@ -4,12 +4,14 @@ from app.fs_machine import SupportForm
 from datetime import datetime
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from helpers import load_tickets, save_ticket
+
 SUPPORT_CHATS = {
     "repay": -4984467211,
     "tech": -1003177380600,
 }
 
 support_router = Router()
+
 
 @support_router.callback_query(F.data == "text_creation")
 async def text_create(callback: types.CallbackQuery, state: FSMContext):
@@ -33,17 +35,80 @@ async def choose_chat(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(SupportForm.waiting_for_text)
 
 
-from datetime import datetime
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+@support_router.message(SupportForm.waiting_for_text, F.content_type == "text")
+async def ask_for_file(message: types.Message, state: FSMContext):
+    await state.update_data(user_text=message.text)
 
-@support_router.message(SupportForm.waiting_for_text)
-async def save_and_send_support_text(message: types.Message, state: FSMContext):
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="📎 Добавить файл", callback_data="add_file")],
+        [InlineKeyboardButton(text="✅ Отправить обращение", callback_data="send_ticket")]
+    ])
+
+    await message.answer("Хотите добавить файл к обращению?", reply_markup=kb)
+
+
+@support_router.callback_query(F.data == "add_file")
+async def add_file(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer()
+    await callback.message.answer("📎 Отправьте файл (документ, фото или видео)")
+    await state.set_state(SupportForm.waiting_for_file)
+
+
+@support_router.callback_query(F.data == "send_ticket")
+async def send_ticket(callback: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    user_text = message.text
+    user_text = data.get("user_text")
     chosen_chat = data.get("chosen_chat")
 
-    if not chosen_chat or chosen_chat not in SUPPORT_CHATS:
-        await message.answer("⚠️ Вы не выбрали чат для поддержки.")
+    if not chosen_chat or not user_text:
+        await callback.answer("⚠️ Ошибка. Попробуйте заново.", show_alert=True)
+        return
+
+    tickets = load_tickets()
+    ticket_id = len(tickets) + 1
+
+    username = callback.from_user.username
+    username_with_at = f"@{username}" if username else callback.from_user.full_name
+
+    ticket_data = {
+        "ticket_id": ticket_id,
+        "chat": chosen_chat,
+        "user_id": callback.from_user.id,
+        "user_name": username_with_at,
+        "text": user_text,
+        "status": "new",
+        "created_at": datetime.now().isoformat()
+    }
+    save_ticket(ticket_data)
+
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(text="✅ Решено", callback_data=f"resolve:{ticket_id}"),
+            InlineKeyboardButton(text="❌ Отклонено", callback_data=f"reject:{ticket_id}")
+        ]
+    ])
+
+    chat_id = SUPPORT_CHATS[chosen_chat]
+    await callback.bot.send_message(
+        chat_id=chat_id,
+        text=f"📩 Новое обращение #{ticket_id}!\n\n"
+             f"👤 Пользователь: {callback.from_user.full_name} {username_with_at}\n"
+             f"💬 Сообщение: {user_text}",
+        reply_markup=kb
+    )
+
+    await callback.message.answer("✅ Ваше обращение отправлено.")
+    await state.clear()
+
+
+@support_router.message(SupportForm.waiting_for_file, F.content_type.in_({"photo", "document", "video"}))
+async def receive_file(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    user_text = data.get("user_text")
+    chosen_chat = data.get("chosen_chat")
+
+    if not chosen_chat or not user_text:
+        await message.answer("⚠️ Ошибка. Попробуйте заново.")
         return
 
     tickets = load_tickets()
@@ -71,18 +136,19 @@ async def save_and_send_support_text(message: types.Message, state: FSMContext):
     ])
 
     chat_id = SUPPORT_CHATS[chosen_chat]
-    await message.bot.send_message(
-        chat_id=chat_id,
-        text=f"📩 Новое обращение #{ticket_id}!\n\n"
-             f"👤 Пользователь: {message.from_user.full_name} {username_with_at}\n"
-             f"💬 Сообщение: {user_text}",
-        reply_markup=kb
-    )
 
-    await message.answer("✅ Ваше обращение отправлено.")
+    if message.content_type == "photo":
+        await message.bot.send_photo(chat_id, photo=message.photo[-1].file_id,
+                                     caption=f"📩 Новое обращение #{ticket_id} от {username_with_at}\n\n{user_text}",
+                                     reply_markup=kb)
+    elif message.content_type == "document":
+        await message.bot.send_document(chat_id, document=message.document.file_id,
+                                        caption=f"📩 Новое обращение #{ticket_id} от {username_with_at}\n\n{user_text}",
+                                        reply_markup=kb)
+    elif message.content_type == "video":
+        await message.bot.send_video(chat_id, video=message.video.file_id,
+                                     caption=f"📩 Новое обращение #{ticket_id} от {username_with_at}\n\n{user_text}",
+                                     reply_markup=kb)
 
-
-
-@support_router.message()
-async def debug_chat_id(message: types.Message):
-    print(message.chat.id)
+    await message.answer("✅ Ваше обращение отправлено с файлом.")
+    await state.clear()

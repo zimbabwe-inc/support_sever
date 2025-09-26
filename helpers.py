@@ -4,9 +4,12 @@ from typing import Optional
 def load_tickets(TICKETS_FILE="tickets.json"):
     try:
         with open(TICKETS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+            content = f.read().strip()
+            if not content:
+                return []
+            return json.loads(content)
     except FileNotFoundError:
-        return {} 
+        return []
 
 def save_ticket(ticket: dict, TICKETS_FILE="tickets.json"):
     tickets = load_tickets()

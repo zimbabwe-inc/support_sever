@@ -4,13 +4,11 @@ import asyncio
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.filters import CommandStart
 from app.heandlers import support_router
 from aiogram.fsm.context import FSMContext
 from aiogram.client.default import DefaultBotProperties
-from app.fs_machine import SupportForm
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from helpers import save_ticket, get_ticket, save_tickets, update_ticket
+from helpers import get_ticket, update_ticket
 from aiogram.types import CallbackQuery
 load_dotenv()
 
@@ -70,10 +68,16 @@ async def handle_admin_action(callback: CallbackQuery):
     except Exception as e:
         await callback.message.answer(f"⚠️ Не удалось отправить сообщение пользователю: {e}")
 
-    await callback.message.edit_text(
-        f"Тикет #{ticket_id} ({ticket['user_name']})\n"
-        f"Статус: {ticket['status'].upper()}"
-    )
+    if callback.message.text:
+        await callback.message.edit_text(
+            f"Тикет #{ticket_id} ({ticket['user_name']})\n"
+            f"Статус: {ticket['status'].upper()}"
+        )
+    else:
+        await callback.message.edit_caption(
+            caption=f"Тикет #{ticket_id} ({ticket['user_name']})\n"
+                    f"Статус: {ticket['status'].upper()}"
+        )
 
     await callback.answer("✅ Решение отправлено пользователю")
 

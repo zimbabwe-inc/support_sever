@@ -1,67 +1,29 @@
 [
   {
     "ticket_id": 1,
-    "chat": "repay",
+    "chat": "tech",
     "user_id": 5431374795,
-    "user_name": "Никита",
-    "text": ";",
-    "file_id": null,
-    "status": "new",
-    "created_at": "2025-09-25T17:04:24.784497"
+    "user_name": "@nykolaitsevTroll",
+    "text": "п",
+    "status": "rejected",
+    "created_at": "2025-09-26T12:25:54.506142"
   },
   {
     "ticket_id": 2,
     "chat": "repay",
     "user_id": 5431374795,
-    "user_name": "Никита",
-    "text": "а",
-    "file_id": null,
-    "status": "new",
-    "created_at": "2025-09-25T17:23:22.030520"
+    "user_name": "@nykolaitsevTroll",
+    "text": "рш",
+    "status": "resolved",
+    "created_at": "2025-09-26T12:27:38.225500"
   },
   {
     "ticket_id": 3,
-    "chat": "repay",
-    "user_id": 5431374795,
-    "user_name": "@nykolaitsevTroll",
-    "text": "hello ticket 4",
-    "status": "new",
-    "created_at": "2025-09-26T11:37:31.486999"
-  },
-  {
-    "ticket_id": 4,
-    "chat": "repay",
-    "user_id": 5431374795,
-    "user_name": "@nykolaitsevTroll",
-    "text": "start",
-    "status": "resolved",
-    "created_at": "2025-09-26T11:51:48.189090"
-  },
-  {
-    "ticket_id": 5,
     "chat": "tech",
     "user_id": 5431374795,
     "user_name": "@nykolaitsevTroll",
-    "text": ";",
+    "text": "fff",
     "status": "resolved",
-    "created_at": "2025-09-26T11:57:03.635119"
-  },
-  {
-    "ticket_id": 6,
-    "chat": "repay",
-    "user_id": 5431374795,
-    "user_name": "@nykolaitsevTroll",
-    "text": "fafafafa",
-    "status": "rejected",
-    "created_at": "2025-09-26T12:04:31.621105"
-  },
-  {
-    "ticket_id": 7,
-    "chat": "repay",
-    "user_id": 7501104143,
-    "user_name": "@Andrey_Sev3r",
-    "text": "Не дошел депозит. Деньги списало с карты но на балансе их нет.\n\nID платежа: 1234566890\nUser ID: 301302303",
-    "status": "resolved",
-    "created_at": "2025-09-26T12:09:00.509482"
+    "created_at": "2025-09-26T12:27:57.865089"
   }
 ]
