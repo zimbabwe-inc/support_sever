@@ -37,6 +37,7 @@ async def choose_chat(callback: types.CallbackQuery, state: FSMContext):
 
 @support_router.message(SupportForm.waiting_for_text, F.content_type == "text")
 async def ask_for_file(message: types.Message, state: FSMContext):
+    await state.set_state(SupportForm.waiting_for_text)
     await state.update_data(user_text=message.text)
 
     kb = InlineKeyboardMarkup(inline_keyboard=[
@@ -77,7 +78,7 @@ async def send_ticket(callback: types.CallbackQuery, state: FSMContext):
         "user_name": username_with_at,
         "text": user_text,
         "status": "new",
-        "created_at": datetime.now().isoformat()
+        "created_at": datetime.now().strftime("%d.%m %H:%M")
     }
     save_ticket(ticket_data)
 
@@ -124,7 +125,7 @@ async def receive_file(message: types.Message, state: FSMContext):
         "user_name": username_with_at,
         "text": user_text,
         "status": "new",
-        "created_at": datetime.now().isoformat()
+        "created_at": datetime.now().strftime("%d.%m %H:%M")
     }
     save_ticket(ticket_data)
 

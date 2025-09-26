@@ -4,11 +4,10 @@ import asyncio
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.fsm.storage.memory import MemoryStorage
-from app.heandlers import support_router
-from aiogram.fsm.context import FSMContext
+from app.heandlers import support_router, FSMContext
 from aiogram.client.default import DefaultBotProperties
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from helpers import get_ticket, update_ticket
+from helpers import get_ticket, update_ticket, time_for_answer
 from aiogram.types import CallbackQuery
 load_dotenv()
 
@@ -56,13 +55,17 @@ async def handle_admin_action(callback: CallbackQuery):
 
     if action == "resolve":
         ticket["status"] = "resolved"
+        ticket = time_for_answer(ticket)
         text = "✅ Ваш тикет решён!"
+        update_ticket(ticket, "resolved_tickets.json")
     else:
         ticket["status"] = "rejected"
+        ticket = time_for_answer(ticket)
         text = "❌ Ваш тикет отклонён."
+        update_ticket(ticket, "rejected_tickets.json")
 
-    update_ticket(ticket)
 
+    
     try:
         await bot.send_message(user_id, text)
     except Exception as e:

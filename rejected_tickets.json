@@ -1,0 +1,20 @@
+[
+  {
+    "ticket_id": 8,
+    "chat": "tech",
+    "user_id": 5431374795,
+    "user_name": "@nykolaitsevTroll",
+    "text": "hi",
+    "status": "rejected",
+    "created_at": "26.09 13:57"
+  },
+  {
+    "ticket_id": 1,
+    "chat": "tech",
+    "user_id": 5431374795,
+    "user_name": "@nykolaitsevTroll",
+    "text": "2",
+    "status": "rejected",
+    "created_at": "26.09 13:59"
+  }
+]
