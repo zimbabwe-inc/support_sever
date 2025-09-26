@@ -10,7 +10,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.client.default import DefaultBotProperties
 from app.fs_machine import SupportForm
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-
+from helpers import save_ticket, get_ticket, save_tickets, update_ticket
+from aiogram.types import CallbackQuery
 load_dotenv()
 
 ADMIN_ID = [5431374795]
@@ -44,7 +45,37 @@ async def cmd_start(message: types.Message, state: FSMContext):
     await message.answer("Выберите чат, куда хотите отправить обращение:", reply_markup=kb.as_markup())
     await state.clear()
 
+@dp.callback_query(F.data.startswith(("resolve", "reject")))
+async def handle_admin_action(callback: CallbackQuery):
+    action, ticket_id = callback.data.split(":")
+    ticket = get_ticket(ticket_id)
 
+    if not ticket:
+        await callback.answer("❌ Тикет не найден", show_alert=True)
+        return
+
+    user_id = ticket["user_id"]
+
+    if action == "resolve":
+        ticket["status"] = "resolved"
+        text = "✅ Ваш тикет решён!"
+    else:
+        ticket["status"] = "rejected"
+        text = "❌ Ваш тикет отклонён."
+
+    update_ticket(ticket)
+
+    try:
+        await bot.send_message(user_id, text)
+    except Exception as e:
+        await callback.message.answer(f"⚠️ Не удалось отправить сообщение пользователю: {e}")
+
+    await callback.message.edit_text(
+        f"Тикет #{ticket_id} ({ticket['user_name']})\n"
+        f"Статус: {ticket['status'].upper()}"
+    )
+
+    await callback.answer("✅ Решение отправлено пользователю")
 
 async def main():
     await dp.start_polling(bot)

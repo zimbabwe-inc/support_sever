@@ -18,5 +18,50 @@
     "file_id": null,
     "status": "new",
     "created_at": "2025-09-25T17:23:22.030520"
+  },
+  {
+    "ticket_id": 3,
+    "chat": "repay",
+    "user_id": 5431374795,
+    "user_name": "@nykolaitsevTroll",
+    "text": "hello ticket 4",
+    "status": "new",
+    "created_at": "2025-09-26T11:37:31.486999"
+  },
+  {
+    "ticket_id": 4,
+    "chat": "repay",
+    "user_id": 5431374795,
+    "user_name": "@nykolaitsevTroll",
+    "text": "start",
+    "status": "resolved",
+    "created_at": "2025-09-26T11:51:48.189090"
+  },
+  {
+    "ticket_id": 5,
+    "chat": "tech",
+    "user_id": 5431374795,
+    "user_name": "@nykolaitsevTroll",
+    "text": ";",
+    "status": "resolved",
+    "created_at": "2025-09-26T11:57:03.635119"
+  },
+  {
+    "ticket_id": 6,
+    "chat": "repay",
+    "user_id": 5431374795,
+    "user_name": "@nykolaitsevTroll",
+    "text": "fafafafa",
+    "status": "rejected",
+    "created_at": "2025-09-26T12:04:31.621105"
+  },
+  {
+    "ticket_id": 7,
+    "chat": "repay",
+    "user_id": 7501104143,
+    "user_name": "@Andrey_Sev3r",
+    "text": "Не дошел депозит. Деньги списало с карты но на балансе их нет.\n\nID платежа: 1234566890\nUser ID: 301302303",
+    "status": "resolved",
+    "created_at": "2025-09-26T12:09:00.509482"
   }
 ]
