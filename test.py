@@ -1,15 +1,12 @@
-from datetime import datetime
+import json 
 
-date_str = "26.09 14:21"
-current_year = datetime.now().year
-date_with_year = f"{date_str} {current_year}"
-date_obj = datetime.strptime(date_with_year, "%d.%m %H:%M %Y")
-
-now = datetime.now()
-difference = now - date_obj
-
-total_seconds = int(difference.total_seconds())
-hours = total_seconds // 3600
-minutes = (total_seconds % 3600) // 60
-
-print(f"{hours:02}:{minutes:02}")
+def count_tickets(filename: str):
+    try:
+        with open(filename, "r", encoding="utf=8") as f:
+            ticket = json.load(f)
+            return len(ticket)
+    except FileNotFoundError:
+        return 0
+print("Новых тикетов:", count_tickets("tickets.json"))
+print("Решённых тикетов:", count_tickets("resolved_tickets.json"))
+print("Отклонённых тикетов:", count_tickets("rejected_tickets.json"))

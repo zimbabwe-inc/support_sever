@@ -7,7 +7,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from app.heandlers import support_router, FSMContext
 from aiogram.client.default import DefaultBotProperties
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from helpers import get_ticket, update_ticket, time_for_answer
+from helpers import get_ticket, update_ticket, time_for_answer, count_tickets
 from aiogram.types import CallbackQuery
 load_dotenv()
 
@@ -32,7 +32,9 @@ dp.include_router(support_router)
 @dp.message(F.text == "/start")
 async def cmd_start(message: types.Message, state: FSMContext):
     if message.from_user.id in ADMIN_ID:
-        kb = InlineKeyboardBuilder()
+        resolved = count_tickets("resolved_tickets.json")
+        rejected = count_tickets("rejected_tickets.json")
+        await message.answer(text=F"Кол-во решенных тикетов {resolved} \nКол-во нерешенных тикетов {rejected}")
         
     kb = InlineKeyboardBuilder()
     for key, chat_id in SUPPORT_CHATS.items():

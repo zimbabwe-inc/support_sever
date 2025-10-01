@@ -72,3 +72,11 @@ def time_for_answer(ticket: dict):
 
     ticket["time_for_answer"] = f"{hours}ч {minutes}м"
     return ticket
+
+def count_tickets(filename: str):
+    try:
+        with open(filename, "r", encoding="utf=8") as f:
+            ticket = json.load(f)
+            return len(ticket)
+    except FileNotFoundError:
+        return 0
