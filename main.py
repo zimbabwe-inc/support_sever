@@ -6,17 +6,12 @@ from aiogram import Dispatcher, types, F
 from aiogram.fsm.storage.memory import MemoryStorage
 from app.heandlers import support_router, FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from helpers import count_tickets
+from helpers import count_tickets, get_chat
 from config import bot
 from app.admin_headlers import admin_router
 load_dotenv()
 
 ADMIN_ID = [5431374795]
-
-SUPPORT_CHATS = {
-    "repay": -4984467211,
-    "tech": -1003177380600,
-}
 
 
 logging.basicConfig(level=logging.INFO)
@@ -26,6 +21,7 @@ dp.include_router(admin_router)
 
 @dp.message(F.text == "/start")
 async def cmd_start(message: types.Message, state: FSMContext):
+    SUPPORT_CHATS, _ = get_chat()
     if message.from_user.id in ADMIN_ID:
         resolved = count_tickets("resolved_tickets.json")
         rejected = count_tickets("rejected_tickets.json")

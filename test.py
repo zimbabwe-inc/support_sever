@@ -1,12 +1,23 @@
 import json 
 
-def count_tickets(filename: str):
+def get_chat():
     try:
-        with open(filename, "r", encoding="utf=8") as f:
-            ticket = json.load(f)
-            return len(ticket)
+        with open("chat.json", "r", encoding="utf-8") as f:
+            chats = json.load(f)
+        return {key: value["chat_id"] for key, value in chats.items()}
     except FileNotFoundError:
-        return 0
-print("Новых тикетов:", count_tickets("tickets.json"))
-print("Решённых тикетов:", count_tickets("resolved_tickets.json"))
-print("Отклонённых тикетов:", count_tickets("rejected_tickets.json"))
+        print("Файл не найден")
+        return {}
+
+def load_support_chats(file_name="chat.json"):
+    try:
+        with open("chat.json", "r", encoding="utf-8") as f:
+            chats = json.load(f)
+        support_chats = {key: value["chat_id"] for key, value in chats.items()}
+        messages = {key: value["message"] for key, value in chats.items()}
+        return support_chats, messages
+    except FileNotFoundError:
+        print(f"Файл {file_name} не найден")
+        return {}, {}
+
+print(get_chat(), load_support_chats())

@@ -5,11 +5,6 @@ from datetime import datetime
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from helpers import load_tickets, save_ticket, get_next_ticket_id, get_chat
 from app.keyboards import get_ticket_kb
-SUPPORT_CHATS = {
-    "repay": -4984467211,
-    "tech": -1003177380600,
-}
-# SUPPORT_CHATS = get_chat()
 
 support_router = Router()
 
@@ -24,15 +19,20 @@ async def text_create(callback: types.CallbackQuery, state: FSMContext):
 
 @support_router.callback_query(F.data.startswith("choose_chat:"))
 async def choose_chat(callback: types.CallbackQuery, state: FSMContext):
+    SUPPORT_CHATS, SUPPORT_MESSAGES = get_chat()
     _, chat_key = callback.data.split(":")
+    
     if chat_key not in SUPPORT_CHATS:
         await callback.message.answer("⚠️ Выбран неверный чат.")
         return
 
     await state.update_data(chosen_chat=chat_key)
-    await callback.message.answer(
-        f"✍️ Напишите суть обращения для поддержки ({chat_key})"
-    )
+
+    if chat_key in SUPPORT_MESSAGES:
+        await callback.message.answer(SUPPORT_MESSAGES[chat_key])
+    else:
+        await callback.message.answer(f"✍️ Напишите суть обращения для поддержки ({chat_key})")
+
     await state.set_state(SupportForm.waiting_for_text)
 
 
@@ -83,7 +83,7 @@ async def send_ticket(callback: types.CallbackQuery, state: FSMContext):
     save_ticket(ticket_data)
 
     kb = get_ticket_kb(ticket_id)
-
+    SUPPORT_CHATS, _ = get_chat()
     chat_id = SUPPORT_CHATS[chosen_chat]
     await callback.bot.send_message(
         chat_id=chat_id,
@@ -124,7 +124,7 @@ async def receive_file(message: types.Message, state: FSMContext):
     save_ticket(ticket_data)
 
     kb = get_ticket_kb(ticket_id)
-
+    SUPPORT_CHATS = get_chat()
     chat_id = SUPPORT_CHATS[chosen_chat]
 
     if message.content_type == "photo":

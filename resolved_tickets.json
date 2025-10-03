@@ -136,5 +136,15 @@
     "status": "resolved",
     "created_at": "03.10 14:11",
     "time_for_answer": "Ошибка формата"
+  },
+  {
+    "ticket_id": 17,
+    "chat": "repay",
+    "user_id": 5431374795,
+    "user_name": "@nykolaitsevTroll",
+    "text": "ge",
+    "status": "resolved",
+    "created_at": "03.10 14:24",
+    "time_for_answer": "Ошибка формата"
   }
 ]

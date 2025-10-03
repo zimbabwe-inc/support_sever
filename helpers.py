@@ -89,4 +89,12 @@ def get_next_ticket_id(*file_names):
     return total_tickets + 1
 
 def get_chat():
-    pass
+    try:
+        with open("chat.json", "r", encoding="utf-8") as f:
+            chats = json.load(f)
+        support_chats = {key: value["chat_id"] for key, value in chats.items()}
+        messages = {key: value["message"] for key, value in chats.items()}
+        return support_chats, messages
+    except FileNotFoundError:
+        print("Файл не найден")
+        return {}, {}
