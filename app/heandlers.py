@@ -3,12 +3,13 @@ from aiogram.fsm.context import FSMContext
 from app.fs_machine import SupportForm
 from datetime import datetime
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from helpers import load_tickets, save_ticket
-
+from helpers import load_tickets, save_ticket, get_next_ticket_id, get_chat
+from app.keyboards import get_ticket_kb
 SUPPORT_CHATS = {
     "repay": -4984467211,
     "tech": -1003177380600,
 }
+# SUPPORT_CHATS = get_chat()
 
 support_router = Router()
 
@@ -65,8 +66,7 @@ async def send_ticket(callback: types.CallbackQuery, state: FSMContext):
         await callback.answer("⚠️ Ошибка. Попробуйте заново.", show_alert=True)
         return
 
-    tickets = load_tickets()
-    ticket_id = len(tickets) + 1
+    ticket_id = get_next_ticket_id("resolved_tickets.json", "rejected_tickets.json")
 
     username = callback.from_user.username
     username_with_at = f"@{username}" if username else callback.from_user.full_name
@@ -82,12 +82,7 @@ async def send_ticket(callback: types.CallbackQuery, state: FSMContext):
     }
     save_ticket(ticket_data)
 
-    kb = InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(text="✅ Решено", callback_data=f"resolve:{ticket_id}"),
-            InlineKeyboardButton(text="❌ Отклонено", callback_data=f"reject:{ticket_id}")
-        ]
-    ])
+    kb = get_ticket_kb(ticket_id)
 
     chat_id = SUPPORT_CHATS[chosen_chat]
     await callback.bot.send_message(
@@ -112,8 +107,7 @@ async def receive_file(message: types.Message, state: FSMContext):
         await message.answer("⚠️ Ошибка. Попробуйте заново.")
         return
 
-    tickets = load_tickets()
-    ticket_id = len(tickets) + 1
+    ticket_id = get_next_ticket_id("resolved_tickets.json", "rejected_tickets.json")
 
     username = message.from_user.username
     username_with_at = f"@{username}" if username else message.from_user.full_name
@@ -129,12 +123,7 @@ async def receive_file(message: types.Message, state: FSMContext):
     }
     save_ticket(ticket_data)
 
-    kb = InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(text="✅ Решено", callback_data=f"resolve:{ticket_id}"),
-            InlineKeyboardButton(text="❌ Отклонено", callback_data=f"reject:{ticket_id}")
-        ]
-    ])
+    kb = get_ticket_kb(ticket_id)
 
     chat_id = SUPPORT_CHATS[chosen_chat]
 

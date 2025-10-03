@@ -30,10 +30,6 @@ def get_ticket(ticket_id: str | int) -> Optional[dict]:
     return None
 
 def update_ticket(updated_ticket: dict, status_file: str = None) -> None:
-    """
-    Если status_file указан — сохраняет тикет туда и удаляет его из основного файла.
-    Иначе просто обновляет тикет в основном файле.
-    """
     if status_file:
         save_ticket(updated_ticket, status_file)
 
@@ -80,3 +76,17 @@ def count_tickets(filename: str):
             return len(ticket)
     except FileNotFoundError:
         return 0
+
+def get_next_ticket_id(*file_names):
+    total_tickets = 0
+    for file_name in file_names:
+        try:
+            with open(file_name, "r", encoding="utf-8") as f:
+                tickets = json.load(f)
+                total_tickets += len(tickets)
+        except FileNotFoundError:
+            continue
+    return total_tickets + 1
+
+def get_chat():
+    pass
