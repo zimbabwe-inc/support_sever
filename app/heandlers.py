@@ -124,7 +124,7 @@ async def receive_file(message: types.Message, state: FSMContext):
     save_ticket(ticket_data)
 
     kb = get_ticket_kb(ticket_id)
-    SUPPORT_CHATS = get_chat()
+    SUPPORT_CHATS, _ = get_chat()
     chat_id = SUPPORT_CHATS[chosen_chat]
 
     if message.content_type == "photo":

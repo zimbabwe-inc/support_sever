@@ -31,16 +31,16 @@ async def support_reply(message: Message, state: FSMContext):
     if action == "resolve":
         ticket["status"] = "resolved"
         ticket = time_for_answer(ticket)
-        text = "✅ Ваш тикет решён!"
+        text = "✅ Решён!"
         update_ticket(ticket, "resolved_tickets.json")
     else:
         ticket["status"] = "rejected"
         ticket = time_for_answer(ticket)
-        text = "❌ Ваш тикет отклонён."
+        text = "❌ Отклонён."
         update_ticket(ticket, "rejected_tickets.json")
     
     await message.bot.send_message(
         user_id, 
-        f"Ваш тикет #{ticket_id} был отмечен как {action.upper()}.\n"
+        f"Ваш запрос был отмечен как {text}.\n"
         f"Сообщение от поддержки: {message.text}"
     )
