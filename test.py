@@ -1,23 +1,10 @@
 import json 
+from helpers import add_new_chat
 
-def get_chat():
-    try:
-        with open("chat.json", "r", encoding="utf-8") as f:
-            chats = json.load(f)
-        return {key: value["chat_id"] for key, value in chats.items()}
-    except FileNotFoundError:
-        print("Файл не найден")
-        return {}
-
-def load_support_chats(file_name="chat.json"):
-    try:
-        with open("chat.json", "r", encoding="utf-8") as f:
-            chats = json.load(f)
-        support_chats = {key: value["chat_id"] for key, value in chats.items()}
-        messages = {key: value["message"] for key, value in chats.items()}
-        return support_chats, messages
-    except FileNotFoundError:
-        print(f"Файл {file_name} не найден")
-        return {}, {}
-
-print(get_chat(), load_support_chats())
+chat = {
+    "adera": {
+        "chat_id": -1003177380600,
+        "message": "🔸BETATRANSFER\nOrder ID: _______ (Пример: 1593507450).\nPayment ID: _______ (Пример: 113019305) Если есть данная информация.\nФайлы: Чек + выписка."
+    }
+}
+add_new_chat(chat)

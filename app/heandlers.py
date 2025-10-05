@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from app.fs_machine import SupportForm
 from datetime import datetime
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from helpers import load_tickets, save_ticket, get_next_ticket_id, get_chat
+from helpers import load_all, save_ticket, get_next_ticket_id, get_chat
 from app.keyboards import get_ticket_kb
 
 support_router = Router()

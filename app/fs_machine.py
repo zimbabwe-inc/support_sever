@@ -6,3 +6,7 @@ class SupportForm(StatesGroup):
 
 class SupportState(StatesGroup):
     waiting_answer_text = State()
+    add_chat = State()
+    add_chat_id = State()
+    add_chat_message = State()
+    delete_chat = State()

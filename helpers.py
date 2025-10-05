@@ -1,7 +1,7 @@
 import json
 from typing import Optional
 import datetime
-def load_tickets(TICKETS_FILE="tickets.json"):
+def load_all(TICKETS_FILE="tickets.json"):
     try:
         with open(TICKETS_FILE, "r", encoding="utf-8") as f:
             content = f.read().strip()
@@ -12,17 +12,23 @@ def load_tickets(TICKETS_FILE="tickets.json"):
         return []
 
 def save_ticket(ticket: dict, TICKETS_FILE="tickets.json"):
-    tickets = load_tickets(TICKETS_FILE)
+    tickets = load_all(TICKETS_FILE)
     tickets.append(ticket)
     with open(TICKETS_FILE, "w", encoding="utf-8") as f:
         json.dump(tickets, f, ensure_ascii=False, indent=2)
+        
+def add_new_chat(chat: dict, FILE="chat.json"):
+    chats = load_all(FILE)
+    chats.update(chat)
+    with open(FILE, "w", encoding="utf-8") as f:
+        json.dump(chats, f, ensure_ascii=False, indent=2)
 
 def save_tickets(tickets, TICKETS_FILE="tickets.json"):
     with open(TICKETS_FILE, "w", encoding="utf-8") as f:
         json.dump(tickets, f, ensure_ascii=False, indent=2)
 
 def get_ticket(ticket_id: str | int) -> Optional[dict]:
-    tickets = load_tickets()
+    tickets = load_all()
     ticket_id = int(ticket_id)
     for t in tickets:
         if t["ticket_id"] == ticket_id:
@@ -33,11 +39,11 @@ def update_ticket(updated_ticket: dict, status_file: str = None) -> None:
     if status_file:
         save_ticket(updated_ticket, status_file)
 
-        tickets = load_tickets()
+        tickets = load_all()
         tickets = [t for t in tickets if t["ticket_id"] != updated_ticket["ticket_id"]]
         save_tickets(tickets)
         return
-    tickets = load_tickets()
+    tickets = load_all()
     for idx, t in enumerate(tickets):
         if t["ticket_id"] == updated_ticket["ticket_id"]:
             tickets[idx] = updated_ticket
@@ -98,3 +104,27 @@ def get_chat():
     except FileNotFoundError:
         print("Файл не найден")
         return {}, {}
+
+def delete_chat(chat_name: str, file_path: str = "chat.json") -> bool:
+
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        if chat_name not in data:
+            print(f"⚠️ Чат '{chat_name}' не найден.")
+            return False
+
+        del data[chat_name]
+
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        print(f"✅ Чат '{chat_name}' успешно удалён.")
+        return True
+
+    except json.JSONDecodeError:
+        print("❌ Ошибка: JSON повреждён или пуст.")
+        return False
+    except Exception as e:
+        print(f"❌ Неожиданная ошибка: {e}")
+        return False

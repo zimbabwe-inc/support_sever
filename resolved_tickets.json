@@ -186,5 +186,15 @@
     "status": "resolved",
     "created_at": "03.10 15:33",
     "time_for_answer": "Ошибка формата"
+  },
+  {
+    "ticket_id": 22,
+    "chat": "tech",
+    "user_id": 5431374795,
+    "user_name": "@nykolaitsevTroll",
+    "text": "1",
+    "status": "resolved",
+    "created_at": "05.10 13:11",
+    "time_for_answer": "Ошибка формата"
   }
 ]
